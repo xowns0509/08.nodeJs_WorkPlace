@@ -1,0 +1,82 @@
+extends layout
+
+block content
+	div.container
+		div.jumbotron
+			h1 나의 메모
+			p 당신의 일정을 꼼꼼히 관리해 드리겠어.
+			a.btn.btn-primary.btn-lg 작업입력
+		table.table
+			tr
+				td
+					h2 할일
+					ul.list-group
+						each val in todoTasks
+							li.list-group-item = val
+							//li.list-group-item = val이렇게 쓰면 안됨
+							//li.list-group-item= val 이렇게 써야 함. 이퀄 붙여라.
+						
+				td
+					h2 진행 중인 일
+					ul.list-group
+						each val in progressTasks
+							li.list-group-item = val
+					
+				td
+					h2 끝난 일
+					ul.list-group
+						each val in doneTasks
+							li.list-group-item = val
+
+				td
+					h2 기존의 리스트
+					ul.list-group							
+						li.list-group-item 밥먹기
+						li.list-group-item 간식먹기
+
+								
+<!-- 일일히 태그 열 필요 없이 좀더 간단하게 html을 제작하는 것 -->
+<!-- jade로 작성하면 후에 html로 변환되는 거 임.  -->
+<!-- 단 띄어쓰기를 잘해야 해. 자식은 무조건 탭으로 구분함. -->
+ <!-- h1= title -->
+<!-- p Welcome to #{title} -->
+  <!-- index.js에 해당내용이 기술되어있음. -->
+  
+  
+  
+  extends layout
+
+block content
+	div.container
+		div.jumbotron
+			h1 나의 메모
+			p 당신의 일정을 꼼꼼히 관리해 드리겠어.
+			a.btn.btn-primary.btn-lg 작업입력
+			<!-- 작업 추가-->
+			div.form-group
+			<!-- createTask 이란 요청이 받아들여졌을 때에는 appJs로 -->
+				form(action='/createTask', method='post')
+					input(type='text' name='contents' class='form-control')
+					button(type='submit' class='btn btn-success')작업추가
+		table.table
+			tr
+				td
+					h2 할일
+					ul.list-group
+						each val in todoTasks
+							li.list-group-item= val
+							div.input-group-btn
+								form(action='/updateTask', method='post')
+								<!-- updateTask 기능을 추가하는건 routesJs에 -->
+									input(type='hidden' name='status' value='PROGRESS')
+									button(type='submit' class='btn btn-info' name='contents' value=val)<strong>></strong>															
+				td
+					h2 진행 중인 일
+					ul.list-group
+						each val in progressTasks
+							li.list-group-item= val
+				td
+					h2 끝난 일
+					ul.list-group
+						each val in doneTasks
+							li.list-group-item= val								

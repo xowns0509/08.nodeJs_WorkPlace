@@ -1,0 +1,13 @@
+노드 js에서 npm으로 플러그인 따위를 받는 방법임.
+
+이거 말고는 cmd 실행 후 nodejs.exe가 있는
+C:\Program Files\nodejs 경로까지 타고 들어가서
+npm install -g express 실행 하는 방법이 있음.
+
+{
+"dependencies" : {
+"express" : "*",
+"connect" : "*", // 최신버전은 별표를, 버전을 기재하고 싶으면 "3.2.1" 이런식으로
+"mongoose" : "*" // 몽고랑 연결하고 mongoose추가. 몽구스가 몽고랑 노드랑 연결하는 놈.
+}
+}

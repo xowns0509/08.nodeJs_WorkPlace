@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Insert title here</title>
+<style type="text/css">
+.line {
+	overflow: hidden;
+}
+
+.seat {
+	margin: 2px;
+	float: left;
+	width: 30px;
+	height: 30px;
+	border-radius: 3px;
+}
+
+.enable {
+	background: gray;
+}
+
+.disable {
+	background: red;
+}
+</style>
+<script type="text/javascript"
+	src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script type="text/javascript">
+	//####################################
+	window.onload = function() {
+		// 1. 소켓 이벤트 연결. 클라이언트는 io.connect();을 통해 소켓을 얻어옴
+		var socket = io.connect();
+		
+		// 클라이언트 소켓에 'reserver' 이벤트를 설정.
+		socket.on('reserver', function(data){
+			// 서버에서 전달된 좌표에 해당하는 seat 스타일을 'disable'로 변경
+			var $target = $('div[data-x='+data.x+'][data-y='+data.y+']');
+			$target.removeClass('enable');
+			$target.addClass('disable');
+			
+		});
+	};
+</script>
+
+<script type="text/javascript">
+<!-- 초기화 -->
+	$(function() {
+ 		var socket = io.connect();
+ 		// var socket 선언을,
+ 		// 현석, 제이, 일원형은 안해도 됬으나
+ 		// 나는 이거 안해주면 not defined라고 에러 뜸.
+ 		// 근데 var socket = io.connect();를 추가해주니 정상적으로 작동.
+ 		// 선생님도 그 이유를 모른다 함.
+ 		
+		//각 좌석을 click 시 실행 될 함수 정의
+		var onClickSeat = function() {
+			
+			//소켓서버 reserve 이벤트 발생
+			var x = $(this).attr('data-x');
+			var y = $(this).attr('data-y');
+			
+			if($(this).hasClass('disable')){
+				console.log("짜잔!");
+			}
+
+			if (confirm('좌석을 예약하시겠습니까?')) {//예약확인용 confirm창... 이 true라면
+				$(this).off('click');// click이벤트 제거
+				// 2. 소켓 서버의 'reserve' 이벤트를 호출하면서 선택한 좌석표시 (x와 y값)을 서버에 전송 
+				socket.emit('reserve', {
+					x:x,
+					y:y
+				});
+
+			} else {
+				alert("예약하지 않았습니다.");
+			}
+		};
+
+		// 첫 실행 시 seats란 js파일을 호출하여 웹 서버에 현 시점에서의 좌석예약 현황정보를 요청.
+		$.getJSON('/seats', function(data) {
+			// data의 파라미터에 저장된 좌석 정보를 y축, x축으로 each()문을 돌려
+			// 좌석값에 따라(0,1,2) 적정한 스타일 시트를 적용.
+			$.each(data, function(indexY, line) {
+				var $line = $('<div></div>').addClass('line');
+				$.each(line, function(indexX, seat) {
+					var $output = $('<div></div>').attr({
+						'data-x' : indexX,
+						'data-y' : indexY
+					}).addClass('seat').appendTo($line);
+					
+					if (seat == 1) {
+						//좌석값이 '1'이면 enable 스타일 적용,
+						//click이벤트에 onClickSeat()함수 적용
+						$output.addClass('enable').on('click', onClickSeat);
+					
+					} else if (seat == 2) {
+						//좌석값이 '2'이면 disable 스타일 적용
+						$output.addClass('disable');
+					}
+				});//inner each
+
+				$line.appendTo('body');//완성된 라인을 <body> 태그에 붙인다.
+			});//outer each. 
+		});
+
+	});
+</script>
+</head>
+<body>
+
+</body>
+</html>
+
+
+
+
+

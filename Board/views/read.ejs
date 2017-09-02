@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    
+    <script type="text/javascript">
+    function del_view(){
+      var span1 = document.getElementById('span1');
+      span1.style.visibility = 'hidden';
+      // visibility 화면에서만 안 보이게 하기에 앞에 공간이 남아있음
+      document.frm1.style.display = 'inline';
+
+    }
+    function cancel(){
+      var span1 = document.getElementById('span1');
+      span1.style.visibility = '';
+      document.frm1.style.display = 'none';
+
+    }
+
+    function del(){
+      if( document.getElementById('pwd').value == ''){
+        alert('비밀번호 입력하세요');
+        document.getElementById('pwd').focus();
+        return;
+      }
+      document.frm1.submit();
+    }
+    </script>
+    
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <a href="/list">목록보기</a><br/>
+    <table width='500' border='1'>
+    	<tr>
+    		<td>번호</td><td><%= row.num %></td>
+    	</tr>
+      <tr>
+        <td>제목</td><td><%= row.title %></td>
+      </tr>
+      <tr>
+        <td>조회수</td><td><%= row.hit %></td>
+      </tr>
+      <tr>
+        <td>일자</td><td><%= row.regdate %></td>
+      </tr>
+      
+      
+      <!-- 밑단에 삭제버튼과 수정 버튼 -->
+      <tr>
+        <td colspan="2">
+        <!--###### 1 삭제버튼 누르면 사라지도록  -->
+        <span id='span1'>
+          <a href="/update/<%= row.num %>">수정</a>&nbsp;&nbsp;&nbsp;
+
+          <input type='button' value="삭제" onclick="del_view()">
+        </span>
+        <!-- 2. 비밀번호 입력할 수 있도록 -->
+        <form id='frm1' name='frm1' action='/delete' method='post' style="display:inline; display:none">
+        <input type='hidden' name='num' value='<%= row.num %>'>
+        <!-- form 태그는 블럭요소로 개행이 되지만 이를 inline요소로 지정하면 개행이 안됨 -->
+        비밀번호
+        <input type="password" name='pwd' id='pwd'>
+        <input type='button' value='delete' onclick="del()">
+        <input type='button' value='cancel' onclick="cancel()">
+        </form>
+        </td>
+      </tr>
+
+    </table>
+  </body>
+</html>

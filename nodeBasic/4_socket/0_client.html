@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>0_client</title>
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<!-- //에러뜨는거 정상. 이클릷스가 못잡아줘서 그럼 -->
+<script type="text/javascript">
+	window.onload = function() {
+		//클라이언트는 io.connect();을 통해 소켓을 얻어옴
+		var socket = io.connect();
+
+		var button = document.getElementById("button");
+		button.onclick = function() {
+			var txt = document.getElementById("text").value;
+			
+			// toServer란 이름의 사용자가 입력한 txt값을, emit()으로 소켓에다 전송
+			// 그럼 서버의 io.sockets.on("connection", function(socket)의 소켓에서 받겠지.
+			socket.emit("toServer", txt);
+		}
+		
+		//서버로부터 온 데이터를 받는 놈
+		socket.on("toClient", function(data){
+			//"toClient" 요게 들어오면 작동하는 콜백함수 function(data).
+			alert(data);
+		});
+
+		
+	}
+</script>
+</head>
+<body>
+	<input type="text" id="text" />
+	<input type="button" id="button" value="전송" />
+
+</body>
+</html>
